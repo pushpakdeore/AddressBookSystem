@@ -97,6 +97,7 @@ class AddressBook {
         }return null;
 
     }
+
     public void updateContact(String firstName){
         Contact contact =  findContact(firstName);
 
@@ -144,7 +145,23 @@ class AddressBook {
             }
 
         }
+    public void deleteContact(String fistName){
+        for (int i =0;i<contactCount;i++){
+            if(contacts[i].getFirstName().equalsIgnoreCase(fistName)){
+                for(int j =i;j<contactCount-1;j++){
+                    contacts[j]=contacts[j+1];
+                }
+                contacts[contactCount-1] = null;
+                contactCount--;
+                System.out.println("Contact deleted successfully");
+                return;
+            }
+
+        }
+        System.out.println("contact not forund with name");
     }
+}
+
 
 
 public class AddressBookSystem {
@@ -158,7 +175,8 @@ public class AddressBookSystem {
             System.out.println("1 Add new Contact ");
             System.out.println("2 Display Conatcts");
             System.out.println("3 Edit Contact ");
-            System.out.println( "4 Exit ");
+            System.out.println("4 Delete Contact");
+            System.out.println( "5 Exit ");
             System.out.print("Choose the option :");
             int choice = sc.nextInt();
             sc.nextLine();
@@ -180,8 +198,14 @@ public class AddressBookSystem {
                     addressBook.updateContact(fisrtName);
                     break;
 
-
                 case 4:
+                    System.out.println("Enter the fist name of the contact to delet");
+                    String name =sc.nextLine();
+                    addressBook.deleteContact(name);
+                    break;
+
+
+                case 5:
                     System.out.println("Exit addres Book ");
                     return;
 
