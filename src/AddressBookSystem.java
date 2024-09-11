@@ -164,64 +164,118 @@ class AddressBook {
 
 
 
-public class AddressBookSystem {
-    public static void main(String[] args) {
-        System.out.println("Welcome To Address Book");
-        AddressBook addressBook =new AddressBook(4);
-        Scanner sc =new Scanner(System.in);
+class AddressBookSystem {
+    private AddressBook[] addressBooks;
+    private String[] bookNames;
+    private int bookCount;
 
-        while (true){
-            System.out.println("Menu :");
-            System.out.println("1 Add new Contact ");
-            System.out.println("2 Display Conatcts");
-            System.out.println("3 Edit Contact ");
-            System.out.println("4 Delete Contact");
-            System.out.println( "5 Exit ");
-            System.out.print("Choose the option :");
+    public AddressBookSystem(int size) {
+        addressBooks = new AddressBook[size];
+        bookNames = new String[size];
+        bookCount = 0;
+    }
+
+    public void addAddressBook(String name, int size) {
+        if (bookCount < addressBooks.length) {
+            addressBooks[bookCount] = new AddressBook(size);
+            bookNames[bookCount] = name;
+            bookCount++;
+            System.out.println("Address book '" + name + "' added.");
+        } else {
+            System.out.println("Cannot add more address books.");
+        }
+    }
+
+    public AddressBook findAddressBook(String name) {
+        for (int i = 0; i < bookCount; i++) {
+            if (bookNames[i].equalsIgnoreCase(name)) {
+                return addressBooks[i];
+            }
+        }
+        return null;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        AddressBookSystem addressBookSystem = new AddressBookSystem(5);
+
+        while (true) {
+            System.out.println("Menu:");
+            System.out.println("1 Add new Address Book");
+            System.out.println("2 Access Address Book");
+            System.out.println("3 Exit");
+            System.out.print("Choose an option: ");
             int choice = sc.nextInt();
             sc.nextLine();
 
-            switch (choice){
+            switch (choice) {
                 case 1:
-                    // new contact
-                    Contact newContact =creatNewContact(sc);
-                    addressBook.addContact(newContact);
+                    System.out.print("Enter name of new Address Book: ");
+                    String bookName = sc.nextLine();
+                    System.out.print("Enter size of Address Book: ");
+                    int size = sc.nextInt();
+                    sc.nextLine();
+                    addressBookSystem.addAddressBook(bookName, size);
                     break;
 
                 case 2:
-                    addressBook.displayAllContact();
+                    System.out.print("Enter name of the Address Book to access: ");
+                    String name = sc.nextLine();
+                    AddressBook addressBook = addressBookSystem.findAddressBook(name);
+                    if (addressBook != null) {
+                        while (true) {
+                            System.out.println("1 Add new Contact ");
+                            System.out.println("2 Display Contacts");
+                            System.out.println("3 Edit Contact ");
+                            System.out.println("4 Delete Contact");
+                            System.out.println("5 Go back to main menu");
+                            System.out.print("Choose an option: ");
+                            int subChoice = sc.nextInt();
+                            sc.nextLine();
+
+                            switch (subChoice) {
+                                case 1:
+                                    Contact newContact = createNewContact(sc);
+                                    addressBook.addContact(newContact);
+                                    break;
+                                case 2:
+                                    addressBook.displayAllContact();
+                                    break;
+                                case 3:
+                                    System.out.print("Enter the first name of the contact to edit: ");
+                                    String firstName = sc.nextLine();
+                                    addressBook.updateContact(firstName);
+                                    break;
+                                case 4:
+                                    System.out.print("Enter the first name of the contact to delete: ");
+                                    String firstNameDel = sc.nextLine();
+                                    addressBook.deleteContact(firstNameDel);
+                                    break;
+                                case 5:
+                                    System.out.println("Returning to main menu...");
+                                    break;
+                                default:
+                                    System.out.println("Invalid option.");
+                            }
+                            if (subChoice == 5) break;
+                        }
+                    } else {
+                        System.out.println("Address book not found.");
+                    }
                     break;
 
                 case 3:
-                    System.out.println("Enter the fist name of contact to edit: ");
-                    String fisrtName = sc.nextLine();
-                    addressBook.updateContact(fisrtName);
-                    break;
-
-                case 4:
-                    System.out.println("Enter the fist name of the contact to delet");
-                    String name =sc.nextLine();
-                    addressBook.deleteContact(name);
-                    break;
-
-
-                case 5:
-                    System.out.println("Exit addres Book ");
+                    System.out.println("Exiting...");
                     return;
 
                 default:
-                    System.out.println("Invalid option ");
+                    System.out.println("Invalid option.");
             }
-
-
         }
-
-
-
     }
-    private static  Contact creatNewContact(Scanner sc){//use Scanner to take input
+
+    private static Contact createNewContact(Scanner sc) {
         System.out.print("Enter First Name: ");
-         //new line
         String firstname = sc.nextLine();
 
         System.out.print("Enter Last Name: ");
@@ -244,7 +298,7 @@ public class AddressBookSystem {
 
         System.out.print("Enter Email: ");
         String email = sc.nextLine();
-        //we creat contact
-        return  new Contact(firstname,lastname,address,city,state,zip,contact,email);
+
+        return new Contact(firstname, lastname, address, city, state, zip, contact, email);
     }
 }
